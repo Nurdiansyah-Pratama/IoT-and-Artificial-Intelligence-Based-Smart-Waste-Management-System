@@ -1,0 +1,81 @@
+@import 'tailwindcss';
+
+@source '../../vendor/laravel/framework/src/Illuminate/Pagination/resources/views/*.blade.php';
+@source '../../storage/framework/views/*.php';
+@source '../**/*.blade.php';
+@source '../**/*.js';
+@source '../**/*.jsx';
+
+@theme {
+    --font-sans: 'Instrument Sans', ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji',
+        'Segoe UI Symbol', 'Noto Color Emoji';
+}
+
+@layer base {
+    html {
+        color-scheme: light;
+    }
+
+    body {
+        min-height: 100vh;
+        margin: 0;
+        background: #eef5f1;
+        color: #17231f;
+    }
+
+    button {
+        cursor: pointer;
+    }
+
+    button:disabled {
+        cursor: not-allowed;
+    }
+
+    #root {
+        min-height: 100vh;
+    }
+}
+
+@layer components {
+    .control-button {
+        @apply inline-flex h-11 items-center justify-center gap-2 rounded-lg px-4 text-sm font-bold shadow-sm transition duration-150 focus:outline-none focus:ring-2 focus:ring-sky-400 focus:ring-offset-2 disabled:shadow-none;
+    }
+}
+
+@layer utilities {
+    .map-shell {
+        isolation: isolate;
+        touch-action: pan-x pan-y;
+    }
+
+    .truck-marker {
+        position: relative;
+        transform-origin: center center;
+        transition: box-shadow 180ms ease, filter 180ms ease;
+    }
+
+    .truck-marker::before {
+        position: absolute;
+        inset: -7px;
+        z-index: -1;
+        content: '';
+        border-radius: 0.75rem;
+        background: rgba(14, 165, 233, 0.18);
+        filter: blur(6px);
+    }
+
+    .truck-collecting {
+        animation: truckPulse 900ms ease-in-out infinite;
+    }
+
+    @keyframes truckPulse {
+        0%,
+        100% {
+            filter: brightness(1);
+        }
+
+        50% {
+            filter: brightness(1.28);
+        }
+    }
+}

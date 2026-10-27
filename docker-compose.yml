@@ -1,0 +1,47 @@
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    working_dir: /var/www/html
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./:/var/www/html
+      - composer-cache:/tmp/cache
+    environment:
+      APP_ENV: local
+      APP_DEBUG: "true"
+      DB_CONNECTION: sqlite
+      DB_DATABASE: /var/www/html/database/database.sqlite
+      COMPOSER_CACHE_DIR: /tmp/cache
+    command: >
+      sh -lc "
+        composer install &&
+        [ -f .env ] || cp .env.example .env &&
+        php -r \"file_exists('database/database.sqlite') || touch('database/database.sqlite');\" &&
+        php artisan key:generate --force &&
+        php artisan migrate --seed --force &&
+        php artisan serve --host=0.0.0.0 --port=8000
+      "
+
+  vite:
+    image: node:24-alpine
+    working_dir: /var/www/html
+    ports:
+      - "5173:5173"
+    volumes:
+      - ./:/var/www/html
+      - npm-cache:/root/.npm
+    environment:
+      VITE_DEV_SERVER_URL: http://localhost:5173
+      VITE_HOST: 0.0.0.0
+      VITE_ORIGIN: http://localhost:5173
+      VITE_HMR_HOST: localhost
+    command: sh -lc "npm install && npm run dev -- --host 0.0.0.0 --port 5173"
+    depends_on:
+      - app
+
+volumes:
+  composer-cache:
+  npm-cache:
